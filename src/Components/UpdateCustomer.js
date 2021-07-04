@@ -1,17 +1,12 @@
 import React , { Component } from "react";
-import useEffect from "react";
-import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import { Link } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
-import GroupIcon from "@material-ui/icons/Group";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import axios from 'axios';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -19,32 +14,34 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center"
-  },	
-  avatar: {										//changes the color of coordinates of "ICON"
-    margin: theme.spacing(1),
-    //backgroundColor: theme.palette.info.main
+  },  
+  avatar: {                   //changes the color of coordinates of "ICON"
+    margin: theme.spacing(5),
     backgroundColor: '#f44336'
   },
-  form: {									//changes distance between heading and the girds 
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(4),
+  form: {                           //changes distance between heading and the girds 
+    width: "100%",                    // Fix IE 11 issue.
+    marginTop: theme.spacing(2),
   },
-  submit: {     
-  	marginTop: theme.spacing(5),                         //changes save button coordinates
-    //margin: theme.spacing(3,0, 2)
+  submit: {                              //changes save button coordinates
+    margin: theme.spacing(3,0, 2),
+    position: 'absolute',
+     bottom:' 80px',
+     left: '60px',
+     
   },
-  textField: {							//changes "DOB" grid coordinates 
+  textField: {                            //changes "DOB" grid coordinates 
     marginLeft: theme.spacing(0),
     marginRight: theme.spacing(1),
     width: "100%"
   },
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    '& > *': {
-      margin: theme.spacing(1),
-    },
+
+  cancelbutton: {                              //changes save button coordinates
+    margin: theme.spacing(3,0, 2),
+    position: 'absolute',
+     bottom:' 80px',
+     left: '350px',
+     
   },
 }));
 
@@ -59,43 +56,43 @@ class UpdateCustomer extends Component {
             gender: '',
             selectedDate:'',
             customer: '',
-            openPopup: props.openPopup,
-            setOpenPopup: props.setOpenPopup
+            openCustomerDialog: props.openCustomerDialog,
+            setOpenCustomerDialog: props.setOpenCustomerDialog
 
         }
         this.changeNameHandler = this.changeNameHandler.bind(this);
         this.changeSalesHandler = this.changeSalesHandler.bind(this);
         this.changeDateHandler = this.changeDateHandler.bind(this);
         this.changeGenderHandler = this.changeGenderHandler.bind(this);
-        this.updateCust = this.updateCust.bind(this);
-    		this.upDateData= '';
-    		this.setCustomer= '';
+        this.addUpdateCustomer = this.addUpdateCustomer.bind(this);
         this.handleClosePopup = this.handleClosePopup.bind(this);
 	}
 
-	
-
 	componentDidMount(){
-        axios.get("/api/customer/" + this.state.id).then( (res) =>{
-            let customer = res.data;
-            this.setState({name: customer.name,
-                sales: customer.sales,
-                gender : customer.gender,
-                selectedDate: customer.dob
-            });
-        });
-
+        if(this.state.id == null){
+          return 
+        }
+        else{
+              axios.get("/api/customer/" + this.state.id).then( (res) =>{
+              let customer = res.data;
+              this.setState({name: customer.name,
+                  sales: customer.sales,
+                  gender : customer.gender,
+                  selectedDate: customer.dob
+              });
+          });
+        }
     }
 
-    updateCust = (e) => {
+    
+    
+    addUpdateCustomer = (e) => {      //Checks the value of id and either adds/updates customer records        
         e.preventDefault();
         let customer = {name: this.state.name, gender: this.state.gender, sales: this.state.sales, dob: this.state.selectedDate};
 
         if(this.state.id == null){
               axios.post('api/customer', customer).then(response =>{
               if(response.data != null){
-                //alert("Data successfully updated!");
-                this.setState({setCustomer: axios.get('api/customer').then((res) => this.setState({upDateData: res.data}))});
                 window.location.reload(false);
                 }
               });
@@ -105,13 +102,10 @@ class UpdateCustomer extends Component {
             axios.put('/api/customer/' +this.state.id, customer).
              then(response =>{
               if(response.data != null){
-                //alert("Data successfully updated!");
-                this.setState({setCustomer: axios.get('api/customer').then((res) => this.setState({upDateData: res.data}))});
                 window.location.reload(false);
                 }
               });
-        }
-        
+        } 
     }
 
 
@@ -132,20 +126,19 @@ class UpdateCustomer extends Component {
     }
 
     handleClosePopup = (event) =>{
-      this.state.setOpenPopup(false);
+      this.state.setOpenCustomerDialog(false);
     }
 
   
   render(){
   return (
-   				
-       <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={useStyles.paper}>
-        <Typography component="h1" variant="h4">
+        <Typography component="h1" variant="h3" >
           Customer Details
         </Typography>
-        <form className={useStyles.form} noValidate>
+        <form className={useStyles.form} noValidate style={{ margin: 10 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -204,26 +197,20 @@ class UpdateCustomer extends Component {
             </Grid>
           </Grid>
           
-          <Button
-            //type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            preventDefault
-            className={useStyles.submit}
-            onClick={this.updateCust}
+          <Button variant="contained" color="primary" preventDefault className={useStyles.submit} onClick={this.addUpdateCustomer}
+            style={{ margin: 10, marginLeft: 0 }}
           >
             Save
           </Button>
 
-          <Button variant="contained" color="secondary" fullWidth onClick={this.handleClosePopup}>
+          <Button variant="contained" color="secondary" preventDefault style={{ marginLeft: 185}} className={useStyles.cancelbutton} onClick={this.handleClosePopup}>
             Cancel
           </Button>
           
           <Grid container justify="center">
           </Grid>
         </form>
-        
+      
       </div>
     </Container>
   );
