@@ -1,6 +1,10 @@
-
-import React ,{ Component } from "react";
-import clsx from 'clsx';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Route, BrowserRouter as Router } from "react-router-dom";
+import {Switch } from "react-router-dom";
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -10,25 +14,12 @@ import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
+import clsx from 'clsx';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
-import GroupIcon from "@material-ui/icons/Group";
-import { Link } from "react-router-dom";
-import { Route, BrowserRouter as Router } from "react-router-dom";
-import {Switch } from "react-router-dom";
-import AddCustomer from "../Components/AddCustomer";
-import Table from "../Components/Table";
-import SampleTable from "../Components/SampleTable";
-import {SidebarData} from "../Components/SidebarData";
-import PersonIcon from '@material-ui/icons/Person';
-import TableChartIcon from '@material-ui/icons/TableChart';
 import PermContactCalendarIcon from '@material-ui/icons/PermContactCalendar';
+import CustomerTable from "../Components/CustomerTable";
 
 
 const drawerWidth = 240;
@@ -100,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-export default function PersistentDrawerLeft() {
+export default function Sidebar() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -155,7 +146,7 @@ export default function PersistentDrawerLeft() {
         <Divider />
         
         <List>
-          <Link to="/view" className={classes.link} > 
+          <Link to="/customers" className={classes.link} > 
               <ListItem button>
                 <ListItemIcon>
                   <PermContactCalendarIcon />
@@ -171,7 +162,7 @@ export default function PersistentDrawerLeft() {
         })}
       >
         <Switch>
-          <Route exact path="/view" component = {SampleTable}>
+          <Route exact path="/customers" component = {CustomerTable}>
           </Route>
         </Switch>
         </main>
